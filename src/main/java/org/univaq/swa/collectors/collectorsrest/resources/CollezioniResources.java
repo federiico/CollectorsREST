@@ -47,9 +47,9 @@ import org.univaq.swa.collectors.collectorsrest.model.Utente;
  */
 @Path("collezioni")
 public class CollezioniResources {
-    
+
     DataSource dataSource = null;
-    
+
     @Path("{titolo: [a-zA-Z0-9]+}")
     @Produces("application/json")
     public CollezioneResources getCollezione(
@@ -106,7 +106,7 @@ public class CollezioniResources {
                 utenti_condivisi.add(utente);
             }
             result.setUtenti(utenti_condivisi);
-            
+
             sql = "select * from dischi_collezione as dis_coll, disco, autore where "
                     + "dis_coll.id_collezione = ? and dis_coll.id_disco = disco.id and disco.id_autore = autore.id;";
 
@@ -114,27 +114,95 @@ public class CollezioniResources {
             preparedStatement.setInt(1, idCollezione);
             rs = preparedStatement.executeQuery();
 
-            Map<String,Object> disco;
-            List<Map<String,Object>> dischi = new ArrayList();
+            Map<String, Object> disco;
+            List<Map<String, Object>> dischi = new ArrayList();
             while (rs.next()) {
                 disco = new LinkedHashMap();
                 disco.put("titolo", rs.getString("titolo"));
                 disco.put("anno", rs.getString("anno"));
                 disco.put("autore", rs.getString("nome_arte"));
                 String uri = uriinfo.getBaseUriBuilder().path(DischiResources.class)
-                        .path(DischiResources.class,"getDisco")
-                        .build(rs.getString("titolo")).toString();
+                        .path(DischiResources.class, "getDisco")
+                        .build(titolo, rs.getString("titolo")).toString();
                 disco.put("uri", uri);
                 dischi.add(disco);
             }
-            
+
             result.setDischi(dischi);
-         
+
             return new CollezioneResources(result);
 
         } catch (Exception e) {
             throw new RESTWebApplicationException(e);
         }
     }
-    
-}
+
+    @Path("{titolo: [a-zA-Z0-9]+}")
+    @Produces("application/json")
+    public CollezioneResources addDisco(
+            Disco disco,
+            @PathParam("titolo") String titolo,
+            @javax.ws.rs.core.Context UriInfo uriinfo,
+            @javax.ws.rs.core.Context ContainerRequestContext req
+    ) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+ 
+        try {
+
+            String sql = "select * "
+                    + "from disco "
+                    + "where titolo = ?";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, disco.getTitolo());
+            ResultSet rs = preparedStatement.executeQuery();
+
+            int idDisco = -1;
+            String privacy = null;
+            while (rs.next()) {
+                privacy = rs.getString("privacy");
+                idDisco = rs.getInt("id");
+            }
+            
+            if(idDisco < 0){
+                sql = "select * from autore where nome_arte = ?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, disco.getAutore().getNome_arte());
+                rs = preparedStatement.executeQuery();
+                int idAutore = 0;
+                while (rs.next()) {
+                    idAutore = rs.getInt("id");
+                }
+                
+                sql = "insert into disco (id_autore,titolo,anno) "
+                    + "values (?,?,?);";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, idAutore);
+                preparedStatement.setString(2, disco.getTitolo());
+                preparedStatement.setString(3, disco.getAnno());
+                
+                preparedStatement.executeUpdate();
+                
+                //inserisci le tracce
+                
+            }
+                
+                
+            
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+        
+
+    }

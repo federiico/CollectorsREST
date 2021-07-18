@@ -45,7 +45,7 @@ import org.univaq.swa.collectors.collectorsrest.model.Utente;
  *
  * @author federicocantoro
  */
-@Path("dischi")
+@Path("collezioni/{collezione: [a-zA-Z0-9]+}/dischi")
 public class DischiResources {
     
     DataSource dataSource = null;
@@ -107,5 +107,6 @@ public class DischiResources {
            throw new RESTWebApplicationException(e);
         }
     }
+    
     
 }
