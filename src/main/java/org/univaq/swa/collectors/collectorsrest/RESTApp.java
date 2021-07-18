@@ -13,6 +13,9 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.univaq.swa.collectors.collectorsrest.jackson.ObjectMapperContextResolver;
 import org.univaq.swa.collectors.collectorsrest.resources.DiscoResources;
+import org.univaq.swa.collectors.collectorsrest.resources.DischiResources;
+import org.univaq.swa.collectors.collectorsrest.resources.CollezioneResources;
+import org.univaq.swa.collectors.collectorsrest.resources.CollezioniResources;
 import org.univaq.swa.collectors.collectorsrest.resources.UtenteResources;
 import org.univaq.swa.collectors.collectorsrest.security.AppExceptionMapper;
 import org.univaq.swa.collectors.collectorsrest.security.AutenticazioneResource;
@@ -34,7 +37,11 @@ public class RESTApp extends Application{
         //con l'annotazione Path) che vogliamo pubblicare
         c.add(AutenticazioneResource.class);
         c.add(DiscoResources.class);
+        c.add(DischiResources.class);
         c.add(UtenteResources.class);
+        c.add(CollezioneResources.class);
+        c.add(CollezioniResources.class);
+     
 
         //aggiungiamo il provider Jackson per poter
         //usare i suoi servizi di serializzazione e 

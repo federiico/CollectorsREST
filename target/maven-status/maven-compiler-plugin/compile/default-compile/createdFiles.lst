@@ -1,4 +1,5 @@
 org/univaq/swa/collectors/collectorsrest/security/LoggedFilter.class
+org/univaq/swa/collectors/collectorsrest/resources/DischiResources.class
 org/univaq/swa/collectors/collectorsrest/resources/UtenteResources.class
 org/univaq/swa/collectors/collectorsrest/jackson/TracciaSerializer.class
 org/univaq/swa/collectors/collectorsrest/model/Autore.class
@@ -12,6 +13,7 @@ org/univaq/swa/collectors/collectorsrest/model/Collezione.class
 org/univaq/swa/collectors/collectorsrest/model/Traccia.class
 org/univaq/swa/collectors/collectorsrest/jackson/CollezioneSerializer.class
 org/univaq/swa/collectors/collectorsrest/jackson/UtenteSerializer.class
+org/univaq/swa/collectors/collectorsrest/resources/CollezioniResources.class
 org/univaq/swa/collectors/collectorsrest/security/AutenticazioneResource.class
 org/univaq/swa/collectors/collectorsrest/resources/CollezioneResources.class
 org/univaq/swa/collectors/collectorsrest/RESTWebApplicationException.class

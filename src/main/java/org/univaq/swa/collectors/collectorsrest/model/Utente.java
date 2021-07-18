@@ -14,16 +14,14 @@ public class Utente {
     
     private String username;
     private String password;
-    private List<Collezione> collezioni;
     private String token;
 
     public Utente() {
     }
     
-    public Utente(String username, String password, List<Collezione> collezioni, String token) {
+    public Utente(String username, String password, String token) {
         this.username = username;
         this.password = password;
-        this.collezioni = collezioni;
         this.token = token;
     }
 
@@ -34,12 +32,7 @@ public class Utente {
     public String getPassword() {
         return password;
     }
-
-    public List<Collezione> getCollezioni() {
-        return collezioni;
-    }
-    
-    
+ 
     public String getToken() {
         return token;
     }
@@ -50,10 +43,6 @@ public class Utente {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setCollezioni(List<Collezione> collezioni) {
-        this.collezioni = collezioni;
     }
     
      public void setToken(String token) {

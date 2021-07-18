@@ -25,7 +25,6 @@ public class UtenteSerializer extends JsonSerializer<Utente>{
 
         jgen.writeStartObject(); // {
         jgen.writeStringField("username", item.getUsername());
-        jgen.writeObjectField("collezioni", item.getCollezioni()); 
         jgen.writeEndObject(); // }
     }
     

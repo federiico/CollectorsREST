@@ -6,6 +6,7 @@
 package org.univaq.swa.collectors.collectorsrest.model;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -16,12 +17,12 @@ public class Collezione {
     private String titolo;
     private String privacy;
     private List<Utente> utenti;
-    private List<Disco> dischi;
+    private List<Map<String,Object>> dischi;
 
     public Collezione() {
     }
 
-    public Collezione(String titolo, String privacy, List<Utente> utenti, List<Disco> dischi) {
+    public Collezione(String titolo, String privacy, List<Utente> utenti, List<Map<String,Object>> dischi) {
         this.titolo = titolo;
         this.privacy = privacy;
         this.utenti = utenti;
@@ -40,7 +41,7 @@ public class Collezione {
         return utenti;
     }
 
-    public List<Disco> getDischi() {
+    public List<Map<String,Object>> getDischi() {
         return dischi;
     }
 
@@ -56,7 +57,7 @@ public class Collezione {
         this.utenti = utenti;
     }
 
-    public void setDischi(List<Disco> dischi) {
+    public void setDischi(List<Map<String,Object>> dischi) {
         this.dischi = dischi;
     }
     

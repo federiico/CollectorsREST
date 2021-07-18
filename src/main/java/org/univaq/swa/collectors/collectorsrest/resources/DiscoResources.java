@@ -43,66 +43,24 @@ import org.univaq.swa.collectors.collectorsrest.model.Disco;
  *
  * @author federicocantoro
  */
-@Path("disco")
 public class DiscoResources {
-    
+
     DataSource dataSource = null;
-    
-    
+
+    private final Disco disco;
+
+    DiscoResources(Disco disco) {
+        this.disco = disco;
+    }
+
+    @Logged
     @GET
     @Produces("application/json")
-    public Response getDisco(
-            @QueryParam("titolo") String titolo
-    ) throws RESTWebApplicationException{
-       // List<Brano> l = new ArrayList();
-       //Brano brano;
-        try{
-            Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup("java:/comp/env");
-            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
-        }
-        catch(Exception e){throw new RESTWebApplicationException(e);}
-            
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-            
-        try{
-
-            String sql = "select disco.titolo as d_titolo,disco.anno,traccia.titolo as t_titolo,traccia.durata, autore.nome_arte "
-                       + "from disco, tracce_disco as t_d, traccia, autore "
-                       + "where disco.id = t_d.id_disco and traccia.id = t_d.id_traccia "
-                       + "and disco.id_autore = autore.id and disco.titolo = ?;";
-			
-            connection = dataSource.getConnection();
-			
-	    preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,titolo);
-                       
-            ResultSet rs = preparedStatement.executeQuery();
-            
-            Disco result = new Disco();
-            List<Traccia> tracce = new ArrayList();
-            Autore autore;
-            Traccia traccia;
-            int i = 0;
-            while (rs.next()) {
-                if(i == 0){
-                    result.setTitolo(rs.getString("d_titolo"));
-                    result.setAnno(rs.getString("anno"));
-                    autore = new Autore("","",rs.getString("nome_arte"));
-                    result.setAutore(autore);
-                }
-                i++;
-                traccia = new Traccia(rs.getString("t_titolo"), rs.getInt("durata"));
-                tracce.add(traccia);
-            }
-            result.setTracce(tracce);
-            if(i >= 2)
-                return Response.ok(result).build();
-            else return null;
-        }
-        catch(Exception e){
-           throw new RESTWebApplicationException(e);
+    public Response getDisco() {
+        try {
+            return Response.ok(disco).build();
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
         }
     }
 }

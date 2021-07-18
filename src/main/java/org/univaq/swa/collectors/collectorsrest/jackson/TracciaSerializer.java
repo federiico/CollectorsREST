@@ -27,7 +27,7 @@ public class TracciaSerializer extends JsonSerializer<Traccia>{
         jgen.writeStringField("titolo", item.getTitolo());
         int minuti = item.getDurata()/60;
         int secondi = item.getDurata()%60;
-        jgen.writeStringField("durata", minuti+":"+secondi);
+        jgen.writeStringField("durata", minuti+":"+String.format("%02d", secondi));
         jgen.writeEndObject(); // }
     }
     

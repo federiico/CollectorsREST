@@ -8,7 +8,7 @@ package org.univaq.swa.collectors.collectorsrest.resources;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
@@ -45,28 +45,38 @@ import org.univaq.swa.collectors.collectorsrest.model.Utente;
  *
  * @author federicocantoro
  */
-
+@Logged
 @Path("utente")
 public class UtenteResources {
 
     DataSource dataSource = null;
-    
+
     @GET
-    @Logged
     @Path("collezioni")
     @Produces("application/json")
+    public Response getCollezioni(
+            @QueryParam ("privacy") String privacy,
+            @QueryParam ("utente") String utente,
+            @javax.ws.rs.core.Context UriInfo uriinfo,
+            @javax.ws.rs.core.Context ContainerRequestContext req
+    ){
+        if(privacy.equalsIgnoreCase("personale"))
+            return getCollezioniPersonali(uriinfo, req);
+        else
+            return getCollezioniCondivise(utente,uriinfo, req);
+    }
+    
+    
+    @Produces("application/json")
     public Response getCollezioniPersonali(
-           
             @javax.ws.rs.core.Context UriInfo uriinfo,
             @javax.ws.rs.core.Context ContainerRequestContext req
     ) {
-      // System.out.println("USERNAME " + req.getProperty("username") );
-       
-       String username = req.getProperty("username").toString();
-       
-       //System.out.println("FUNZIONA:" + username);
-   
-       //return null;
+
+        String username = req.getProperty("username").toString();
+
+        //System.out.println("FUNZIONA:" + username);
+        //return null;
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
@@ -91,43 +101,67 @@ public class UtenteResources {
             preparedStatement.setString(1, username);
 
             ResultSet rs = preparedStatement.executeQuery();
-            
+
             List<String> collezioni = new ArrayList<String>();
 
             while (rs.next()) {
-                URI uri = uriinfo.getBaseUriBuilder()
-                    .path(getClass()).path("collezioni")
-                    .path(getClass(), "getCollezione").build(rs.getString("titolo"));
+                URI uri = uriinfo.getBaseUriBuilder().path(CollezioniResources.class)
+                        .path(CollezioniResources.class, "getCollezione").build(rs.getString("titolo"));
                 collezioni.add(uri.toString());
             }
             return Response.ok(collezioni).build();
-            
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+    }
+    
+
+    @Produces("application/json")
+    public Response getCollezioniCondivise(
+            @QueryParam("utente") String utente,
+            @javax.ws.rs.core.Context UriInfo uriinfo,
+            @javax.ws.rs.core.Context ContainerRequestContext req
+    ) {
+        
+        String username = req.getProperty("username").toString();
+
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
         } catch (Exception e) {
             throw new RESTWebApplicationException(e);
         }
 
-    }
-    
-    @Path("collezioni/{titolo: [a-zA-Z0-9_]*}")
-    public CollezioneResources getCollezione(
-            @PathParam("titolo") String titolo
-         
-    ) {
-        Collezione c = new Collezione();
-        Disco d = new Disco();
-        d.setTitolo("S.A.L.M.O");
-        Autore a = new Autore("fabrizio","pisciottu","Salmo");
-        d.setAutore(a);
-        c.setTitolo("PLAYLIST");
-        c.setPrivacy("personale");
-        List<Disco> dischi = new ArrayList<Disco>();
-        dischi.add(d);
-        c.setDischi(dischi);
-        Utente u = new Utente();
-        u.setUsername("mario");
-        u.setPassword("mario123");
-        return new CollezioneResources(c);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+
+            String sql = "SELECT * from collezione, utente, collezione_condivisa as coll_cond where utente.username = ? "+       
+                         " and coll_cond.id_collezione = collezione.id;";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, utente);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            List<String> collezioni = new ArrayList<String>();
+
+            while (rs.next()) {
+                URI uri = uriinfo.getBaseUriBuilder().path(CollezioniResources.class)
+                        .path(CollezioniResources.class, "getCollezione").build(rs.getString("titolo"));
+                collezioni.add(uri.toString());
+            }
+            return Response.ok(collezioni).build();
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
         
     }
-
+    
 }

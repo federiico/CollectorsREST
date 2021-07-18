@@ -6,40 +6,34 @@
 package org.univaq.swa.collectors.collectorsrest.resources;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import org.univaq.swa.collectors.collectorsrest.model.Collezione;
 import org.univaq.swa.collectors.collectorsrest.RESTWebApplicationException;
+import org.univaq.swa.collectors.collectorsrest.security.Logged;
 
 /**
  *
  * @author federicocantoro
  */
+
 public class CollezioneResources {
     
-    private final Collezione f;
+    private final Collezione collezione;
 
-    CollezioneResources(Collezione f) {
-        this.f=f;
+    CollezioneResources(Collezione collezione) {
+        this.collezione=collezione;
     }
     
-        @GET
+    @Logged
+    @GET
     @Produces("application/json")
     public Response getCollezione() {
         try {
-            return Response.ok(f)
-                    //possiamo aggiungere alla Response vari elementi, ad esempio header...
-                    .header("X-fattura-app-version", "1.0")
-                    .build();
+            return Response.ok(collezione).build();
         } catch (Exception e) {
-            //gestione delle eccezioni (business):
-            //Modalità 1: creazione response di errore
-//            return Response.serverError()
-//                    .entity(e.getMessage()) //mai in produzione
-//                    .build();
-            //Modalità 2: incapsulamento in eccezione JAXRS compatibile
             throw new RESTWebApplicationException(e);
         }
     }
-    
 }
