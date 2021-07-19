@@ -35,8 +35,8 @@ public class DiscoDeserializer extends JsonDeserializer<Disco>{
             disco.setTitolo(node.get("titolo").asText());
         }
         
-        if (node.has("anno")) {
-            disco.setAnno(node.get("anno").asText());
+        if (node.has("anno di uscita")) {
+            disco.setAnno(node.get("anno di uscita").asText());
         }
 
         if (node.has("autore")) {

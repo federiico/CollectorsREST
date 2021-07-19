@@ -50,7 +50,7 @@ public class CollezioniResources {
 
     DataSource dataSource = null;
 
-    @Path("{titolo: [a-zA-Z0-9]+}")
+    @Path("{titolo: [a-zA-Z0-9%20]+}")
     @Produces("application/json")
     public CollezioneResources getCollezione(
             @PathParam("titolo") String titolo,
@@ -137,4 +137,282 @@ public class CollezioniResources {
         }
     }
     
+    @GET
+    @Produces("application/json")
+    public Response getCollezioniPubblicheFiltered(
+            @QueryParam("titolo") String titolo,
+            @QueryParam("autore") String autore,
+            @QueryParam("traccia") String traccia,
+            @QueryParam("anno") String anno,
+            @javax.ws.rs.core.Context UriInfo uriinfo
+    ){
+         if (autore == null && anno == null && traccia == null) {
+                    return getCollezioniPubblicheByTitolo(titolo, uriinfo);
+                }
+
+                if (titolo == null && anno == null && traccia == null) {
+                    return getCollezioniPubblicheByAutore(autore, uriinfo);
+                }
+
+                if (titolo == null && traccia == null && autore == null) {
+                    return getCollezioniPubblicheByAnno(anno, uriinfo);
+                }
+
+                if (titolo == null && anno == null && autore == null) {
+                    return getCollezioniPubblicheByTraccia(traccia, uriinfo);
+                }
+
+                if (titolo == null && traccia == null) {
+                    return getCollezioniPubblicheByAutoreAndAnno(autore, anno, uriinfo);
+                }
+                return null;
+    }
+
+    
+    @Produces("application/json")
+    public Response getCollezioniPubblicheByTitolo(
+            @QueryParam("titolo") String titolo,
+            @javax.ws.rs.core.Context UriInfo uriinfo
+    ) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+
+            String sql = "select collezione.titolo as collezione, disco.titolo as disco "
+                    + "from collezione, dischi_collezione as dis_col, disco where "
+                    + "collezione.privacy = 'pubblica' and dis_col.id_collezione = collezione.id "
+                    + "and dis_col.id_disco = disco.id and disco.titolo = ?;";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, titolo);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            List<String> dischi = new ArrayList<String>();
+
+            while (rs.next()) {
+
+                URI uri = uriinfo.getBaseUriBuilder().path(DischiResources.class)
+                        .path(DischiResources.class, "getDisco")
+                        .build(rs.getString("collezione"), rs.getString("disco"));
+                dischi.add(uri.toString());
+            }
+            return Response.ok(dischi).build();
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+    }
+
+    
+    @Produces("application/json")
+    public Response getCollezioniPubblicheByAutore(
+            @QueryParam("autore") String autore,
+            @javax.ws.rs.core.Context UriInfo uriinfo
+    ) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+
+            String sql = "select collezione.titolo as collezione, disco.titolo as disco "
+                    + "from collezione, dischi_collezione as dis_col, disco, autore where "
+                    + "collezione.privacy = 'pubblica' and dis_col.id_collezione = collezione.id and "
+                    + "disco.id_autore = autore.id and autore.nome_arte = ? "
+                    + "and dis_col.id_disco = disco.id;";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, autore);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            List<String> dischi = new ArrayList<String>();
+
+            while (rs.next()) {
+
+                URI uri = uriinfo.getBaseUriBuilder().path(DischiResources.class)
+                        .path(DischiResources.class, "getDisco")
+                        .build(rs.getString("collezione"), rs.getString("disco"));
+                dischi.add(uri.toString());
+            }
+            return Response.ok(dischi).build();
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+    }
+
+    
+    @Produces("application/json")
+    public Response getCollezioniPubblicheByAnno(
+            @QueryParam("anno") String anno,
+            @javax.ws.rs.core.Context UriInfo uriinfo
+    ) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+
+            String sql = "select collezione.titolo as collezione, disco.titolo as disco "
+                    + "from collezione, dischi_collezione as dis_col, disco where "
+                    + "collezione.privacy = 'pubblica' and dis_col.id_collezione = collezione.id "
+                    + "and disco.anno = ? "
+                    + "and dis_col.id_disco = disco.id;";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, anno);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            List<String> dischi = new ArrayList<String>();
+
+            while (rs.next()) {
+
+                URI uri = uriinfo.getBaseUriBuilder().path(DischiResources.class)
+                        .path(DischiResources.class, "getDisco")
+                        .build(rs.getString("collezione"), rs.getString("disco"));
+                dischi.add(uri.toString());
+            }
+            return Response.ok(dischi).build();
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+    }
+
+    
+    @Produces("application/json")
+    public Response getCollezioniPubblicheByTraccia(
+            @QueryParam("traccia") String traccia,
+            @javax.ws.rs.core.Context UriInfo uriinfo
+    ) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+
+            String sql = "select collezione.titolo as collezione, disco.titolo as disco "
+                    + "from collezione, dischi_collezione as dis_col, disco, traccia, tracce_disco as tra_dis "
+                    + "where "
+                    + "collezione.privacy = 'pubblica' and dis_col.id_collezione = collezione.id and "
+                    + "tra_dis.id_disco = disco.id "
+                    + "and tra_dis.id_traccia = traccia.id and traccia.titolo = ? "
+                    + "and dis_col.id_disco = disco.id;";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, traccia);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            List<String> dischi = new ArrayList<String>();
+
+            while (rs.next()) {
+
+                URI uri = uriinfo.getBaseUriBuilder().path(DischiResources.class)
+                        .path(DischiResources.class, "getDisco")
+                        .build(rs.getString("collezione"), rs.getString("disco"));
+                dischi.add(uri.toString());
+            }
+            return Response.ok(dischi).build();
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+    }
+
+    
+    @Produces("application/json")
+    public Response getCollezioniPubblicheByAutoreAndAnno(
+            @QueryParam("autore") String autore,
+            @QueryParam("anno") String anno,
+            @javax.ws.rs.core.Context UriInfo uriinfo
+    ) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+
+            String sql = "select collezione.titolo as collezione, disco.titolo as disco "
+                    + "from collezione, dischi_collezione as dis_col, disco, autore where "
+                    + "collezione.privacy = 'pubblica' and dis_col.id_collezione = collezione.id and "
+                    + "disco.id_autore = autore.id "
+                    + "and disco.anno = ? and autore.nome_arte = ? "
+                    + "and dis_col.id_disco = disco.id;";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, anno);
+            preparedStatement.setString(2, autore);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            List<String> dischi = new ArrayList<String>();
+
+            while (rs.next()) {
+
+                URI uri = uriinfo.getBaseUriBuilder().path(DischiResources.class)
+                        .path(DischiResources.class, "getDisco")
+                        .build(rs.getString("collezione"), rs.getString("disco"));
+                dischi.add(uri.toString());
+            }
+            return Response.ok(dischi).build();
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+    }
 }

@@ -31,8 +31,6 @@ public class CollezioneResources {
         this.collezione=collezione;
     }
     
-
-    
     @Logged
     @GET
     @Produces("application/json")

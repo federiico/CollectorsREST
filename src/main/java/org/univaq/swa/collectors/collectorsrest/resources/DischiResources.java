@@ -28,14 +28,17 @@ import org.univaq.swa.collectors.collectorsrest.RESTWebApplicationException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import javax.naming.InitialContext;
 import javax.naming.Context;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.core.MediaType;
+import jdk.nashorn.internal.objects.LinkedMap;
 import org.univaq.swa.collectors.collectorsrest.model.Autore;
 import org.univaq.swa.collectors.collectorsrest.model.Traccia;
 import org.univaq.swa.collectors.collectorsrest.model.Disco;
@@ -51,7 +54,7 @@ public class DischiResources {
     
     DataSource dataSource = null;
     
-    @Path("{disco: [a-zA-Z0-9]+}")
+    @Path("{disco: [a-zA-Z0-9%20]+}")
     @Produces("application/json")
     public DiscoResources getDisco(
             @PathParam("collezione") String collezione,
@@ -68,7 +71,7 @@ public class DischiResources {
             
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-            
+                  
         try{
 
             String sql = "select disco.titolo as d_titolo,disco.anno,traccia.titolo as t_titolo,traccia.durata, autore.nome_arte "
@@ -111,6 +114,7 @@ public class DischiResources {
     
     @POST
     @Consumes("application/json")
+    @Produces("application/json")
     public Response addDisco(
             Disco disco,
             @PathParam("collezione") String titolo,
@@ -152,9 +156,27 @@ public class DischiResources {
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, disco.getAutore().getNome_arte());
                 rs = preparedStatement.executeQuery();
-                int idAutore = 0;
+                int idAutore = -1;
                 while (rs.next()) {
                     idAutore = rs.getInt("id");
+                }
+                
+                if(idAutore < 0){
+                    sql = "insert into autore (nome,cognome,nome_arte) "
+                        + "values (?,?,?);";
+                    
+                    preparedStatement = connection.prepareStatement(sql);
+                    preparedStatement.setString(1, disco.getAutore().getNome());
+                    preparedStatement.setString(2, disco.getAutore().getCognome());
+                    preparedStatement.setString(3, disco.getAutore().getNome_arte());
+                    preparedStatement.executeUpdate();
+                    
+                    sql = "select MAX(id) as max from autore;";
+                    preparedStatement = connection.prepareStatement(sql);
+                    rs = preparedStatement.executeQuery();
+                    while (rs.next()) {
+                        idAutore = rs.getInt("max");
+                    } 
                 }
 
                 sql = "insert into disco (id_autore,titolo,anno) "
@@ -205,9 +227,15 @@ public class DischiResources {
             String uri = uriinfo.getBaseUriBuilder().path(getClass())
                 .path(DischiResources.class, "getDisco")
                 .build(titolo, disco.getTitolo()).toString();
-            
            
-            return Response.status(Response.Status.CREATED).entity(uri).type(MediaType.TEXT_PLAIN).build();
+            
+            Map<String,String> result = new LinkedHashMap();
+            result.put("titolo", disco.getTitolo());
+            result.put("autore", disco.getAutore().getNome_arte());
+            result.put("anno di uscita", disco.getAnno());
+            result.put("uri",uri);
+            
+            return Response.status(Response.Status.CREATED).entity(result).build();
 
         } catch (Exception e) {
             throw new RESTWebApplicationException(e);
