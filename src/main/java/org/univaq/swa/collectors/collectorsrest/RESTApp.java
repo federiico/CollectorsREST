@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.univaq.swa.collectors.collectorsrest.jackson.ObjectMapperContextResolver;
+import org.univaq.swa.collectors.collectorsrest.resources.AutoriResources;
 import org.univaq.swa.collectors.collectorsrest.resources.DiscoResources;
 import org.univaq.swa.collectors.collectorsrest.resources.DischiResources;
 import org.univaq.swa.collectors.collectorsrest.resources.CollezioneResources;
@@ -41,6 +42,7 @@ public class RESTApp extends Application{
         c.add(UtenteResources.class);
         c.add(CollezioneResources.class);
         c.add(CollezioniResources.class);
+        c.add(AutoriResources.class);
      
 
         //aggiungiamo il provider Jackson per poter
