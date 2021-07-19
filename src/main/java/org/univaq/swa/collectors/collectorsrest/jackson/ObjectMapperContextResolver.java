@@ -43,6 +43,7 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
         
         
         customSerializer.addSerializer(Disco.class, new DiscoSerializer());
+        customSerializer.addDeserializer(Disco.class, new DiscoDeserializer());
         customSerializer.addSerializer(Traccia.class, new TracciaSerializer());
         customSerializer.addSerializer(Utente.class, new UtenteSerializer());
         customSerializer.addSerializer(Collezione.class, new CollezioneSerializer());

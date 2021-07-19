@@ -18,6 +18,10 @@ public class Autore {
     public Autore() {
     }
     
+     public Autore( String nome_arte) {
+        this.nome_arte = nome_arte;
+    }
+    
     public Autore(String nome, String cognome, String nome_arte) {
         this.nome = nome;
         this.cognome = cognome;

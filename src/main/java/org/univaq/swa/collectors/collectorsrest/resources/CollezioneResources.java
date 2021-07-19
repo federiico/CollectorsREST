@@ -31,6 +31,8 @@ public class CollezioneResources {
         this.collezione=collezione;
     }
     
+
+    
     @Logged
     @GET
     @Produces("application/json")
@@ -42,18 +44,5 @@ public class CollezioneResources {
         }
     }
     
-    @Logged
-    @POST
-    @Produces("application/json")
-    public Response addDisco(
-        @Context UriInfo uriinfo,
-        Disco disco)
-    {
-        URI uri = uriinfo.getBaseUriBuilder()
-                .path(DischiResources.class, "getDisco")
-                .build(disco.getTitolo());
-        return Response.created(uri).build();
-        
-        
-    }
+    
 }

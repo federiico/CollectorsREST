@@ -34,15 +34,15 @@ public class DiscoDeserializer extends JsonDeserializer<Disco>{
         if (node.has("titolo")) {
             disco.setTitolo(node.get("titolo").asText());
         }
+        
+        if (node.has("anno")) {
+            disco.setAnno(node.get("anno").asText());
+        }
 
         if (node.has("autore")) {
             disco.setAutore(jp.getCodec().treeToValue(node.get("autore"), Autore.class));
         }
         
-         if (node.has("anno")) {
-            disco.setTitolo(node.get("anno").asText());
-        }
-
         if (node.has("tracce")) {
             JsonNode ne = node.get("tracce");
             List<Traccia> tracce = new ArrayList<>();

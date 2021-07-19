@@ -12,6 +12,7 @@ org/univaq/swa/collectors/collectorsrest/jackson/ObjectMapperContextResolver.cla
 org/univaq/swa/collectors/collectorsrest/model/Collezione.class
 org/univaq/swa/collectors/collectorsrest/model/Traccia.class
 org/univaq/swa/collectors/collectorsrest/jackson/CollezioneSerializer.class
+org/univaq/swa/collectors/collectorsrest/jackson/DiscoDeserializer.class
 org/univaq/swa/collectors/collectorsrest/jackson/UtenteSerializer.class
 org/univaq/swa/collectors/collectorsrest/resources/CollezioniResources.class
 org/univaq/swa/collectors/collectorsrest/security/AutenticazioneResource.class

@@ -105,8 +105,9 @@ public class UtenteResources {
             List<String> collezioni = new ArrayList<String>();
 
             while (rs.next()) {
+                                    
                 URI uri = uriinfo.getBaseUriBuilder().path(CollezioniResources.class)
-                        .path(CollezioniResources.class, "getCollezione").build(rs.getString("titolo"));
+                       .path(CollezioniResources.class, "getCollezione").build(rs.getString("titolo"));
                 collezioni.add(uri.toString());
             }
             return Response.ok(collezioni).build();

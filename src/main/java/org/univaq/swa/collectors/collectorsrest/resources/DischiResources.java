@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import javax.naming.InitialContext;
 import javax.naming.Context;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.core.MediaType;
 import org.univaq.swa.collectors.collectorsrest.model.Autore;
 import org.univaq.swa.collectors.collectorsrest.model.Traccia;
 import org.univaq.swa.collectors.collectorsrest.model.Disco;
@@ -105,6 +106,111 @@ public class DischiResources {
         }
         catch(Exception e){
            throw new RESTWebApplicationException(e);
+        }
+    }
+    
+    @POST
+    @Consumes("application/json")
+    public Response addDisco(
+            Disco disco,
+            @PathParam("collezione") String titolo,
+            @javax.ws.rs.core.Context UriInfo uriinfo,
+            @javax.ws.rs.core.Context ContainerRequestContext req
+    ) {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/CollectorsREST");
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+
+            String sql = "select * "
+                    + "from disco "
+                    + "where titolo = ?";
+
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, disco.getTitolo());
+            ResultSet rs = preparedStatement.executeQuery();
+
+            int idDisco = -1;
+            String privacy = null;
+            while (rs.next()) {
+
+                idDisco = rs.getInt("id");
+            }
+
+            if (idDisco < 0) {
+                sql = "select * from autore where nome_arte = ?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, disco.getAutore().getNome_arte());
+                rs = preparedStatement.executeQuery();
+                int idAutore = 0;
+                while (rs.next()) {
+                    idAutore = rs.getInt("id");
+                }
+
+                sql = "insert into disco (id_autore,titolo,anno) "
+                        + "values (?,?,?);";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, idAutore);
+                preparedStatement.setString(2, disco.getTitolo());
+                preparedStatement.setString(3, disco.getAnno());
+
+                preparedStatement.executeUpdate();
+
+                Traccia traccia;
+
+                for (int i = 0; i < disco.getTracce().size(); i++) {
+
+                    sql = "insert into traccia (titolo,durata) "
+                            + "values (?,?);";
+
+                    traccia = disco.getTracce().get(i);
+                    preparedStatement = connection.prepareStatement(sql);
+                    preparedStatement.setString(1, traccia.getTitolo());
+                    preparedStatement.setInt(2, traccia.getDurata());
+                    preparedStatement.executeUpdate();
+
+                    sql = "insert into tracce_disco (id_disco,id_traccia) "
+                            + "values ( (SELECT MAX(id) FROM disco) , (SELECT MAX(id) FROM traccia) );";
+
+                    preparedStatement = connection.prepareStatement(sql);
+                    preparedStatement.executeUpdate();
+                }
+
+                sql = "select MAX(id) as max from disco;";
+                preparedStatement = connection.prepareStatement(sql);
+                rs = preparedStatement.executeQuery();
+                while (rs.next()) {
+                    idDisco = rs.getInt("max");
+                }
+            }
+
+            sql = "insert into dischi_collezione (id_collezione,id_disco) VALUES "
+                    + "( (select id from collezione where titolo = ?), ?);";
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, titolo);
+            preparedStatement.setInt(2, idDisco);
+            preparedStatement.executeUpdate();
+            
+            String uri = uriinfo.getBaseUriBuilder().path(getClass())
+                .path(DischiResources.class, "getDisco")
+                .build(titolo, disco.getTitolo()).toString();
+            
+           
+            return Response.status(Response.Status.CREATED).entity(uri).type(MediaType.TEXT_PLAIN).build();
+
+        } catch (Exception e) {
+            throw new RESTWebApplicationException(e);
         }
     }
     
