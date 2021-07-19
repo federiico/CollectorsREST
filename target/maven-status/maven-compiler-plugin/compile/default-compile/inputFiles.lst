@@ -12,6 +12,7 @@
 /Users/federicocantoro/Git/CollectorsREST/src/main/java/org/univaq/swa/collectors/collectorsrest/resources/CollezioneResources.java
 /Users/federicocantoro/Git/CollectorsREST/src/main/java/org/univaq/swa/collectors/collectorsrest/security/LoggedFilter.java
 /Users/federicocantoro/Git/CollectorsREST/src/main/java/org/univaq/swa/collectors/collectorsrest/model/Collezione.java
+/Users/federicocantoro/Git/CollectorsREST/src/main/java/org/univaq/swa/collectors/collectorsrest/resources/AutoriResources.java
 /Users/federicocantoro/Git/CollectorsREST/src/main/java/org/univaq/swa/collectors/collectorsrest/resources/DischiResources.java
 /Users/federicocantoro/Git/CollectorsREST/src/main/java/org/univaq/swa/collectors/collectorsrest/jackson/UtenteSerializer.java
 /Users/federicocantoro/Git/CollectorsREST/src/main/java/org/univaq/swa/collectors/collectorsrest/resources/DiscoResources.java
