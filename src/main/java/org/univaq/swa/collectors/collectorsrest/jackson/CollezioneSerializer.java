@@ -25,7 +25,8 @@ public class CollezioneSerializer extends JsonSerializer<Collezione>{
 
         jgen.writeStartObject(); // {
         jgen.writeStringField("titolo", item.getTitolo());
-        jgen.writeStringField("privacy", item.getPrivacy()); 
+        jgen.writeStringField("privacy", item.getPrivacy());
+        jgen.writeObjectField("admin", item.getAdmin());
         jgen.writeObjectField("utenti", item.getUtenti());
         jgen.writeObjectField("dischi", item.getDischi());
         jgen.writeEndObject(); // }

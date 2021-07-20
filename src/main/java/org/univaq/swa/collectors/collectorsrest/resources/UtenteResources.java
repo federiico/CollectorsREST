@@ -50,7 +50,7 @@ import org.univaq.swa.collectors.collectorsrest.model.Utente;
 public class UtenteResources {
 
     DataSource dataSource = null;
-
+    
     @GET
     @Path("collezioni")
     @Produces("application/json")
@@ -69,23 +69,23 @@ public class UtenteResources {
                 return getCollezioniPersonali(uriinfo, req);
             } else {
                 if (autore == null && anno == null && traccia == null) {
-                    return getCollezioniPersonaliByTitolo(titolo, uriinfo, req);
+                    return getDischiFromPersonaliByTitolo(titolo, uriinfo, req);
                 }
 
                 if (titolo == null && anno == null && traccia == null) {
-                    return getCollezioniPersonaliByAutore(autore, uriinfo, req);
+                    return getDischiFromPersonaliByAutore(autore, uriinfo, req);
                 }
 
                 if (titolo == null && traccia == null && autore == null) {
-                    return getCollezioniPersonaliByAnno(anno, uriinfo, req);
+                    return getDischiFromPersonaliByAnno(anno, uriinfo, req);
                 }
 
                 if (titolo == null && anno == null && autore == null) {
-                    return getCollezioniPersonaliByTraccia(traccia, uriinfo, req);
+                    return getDischiFromPersonaliByTraccia(traccia, uriinfo, req);
                 }
 
                 if (titolo == null && traccia == null) {
-                    return getCollezioniPersonaliByAnnoAndAutore(autore, anno, uriinfo, req);
+                    return getDischiFromPersonaliByAnnoAndAutore(autore, anno, uriinfo, req);
                 }
                 return null;
             }
@@ -94,23 +94,23 @@ public class UtenteResources {
                 return getCollezioniCondivise(utente, uriinfo, req);
             } else {
                 if (autore == null && anno == null && traccia == null) {
-                    return getCollezioniCondiviseByTitolo(utente, titolo, uriinfo, req);
+                    return getDischiFromCondiviseByTitolo(utente, titolo, uriinfo, req);
                 }
 
                 if (titolo == null && anno == null && traccia == null) {
-                    return getCollezioniCondiviseByAutore(utente, autore, uriinfo, req);
+                    return getDischiFromCondiviseByAutore(utente, autore, uriinfo, req);
                 }
 
                 if (titolo == null && traccia == null && autore == null) {
-                    return getCollezioniCondiviseByAnno(utente, anno, uriinfo, req);
+                    return getDischiFromCondiviseByAnno(utente, anno, uriinfo, req);
                 }
 
                 if (titolo == null && anno == null && autore == null) {
-                    return getCollezioniCondiviseByTraccia(utente, traccia, uriinfo, req);
+                    return getDischiFromCondiviseByTraccia(utente, traccia, uriinfo, req);
                 }
 
                 if (titolo == null && traccia == null) {
-                    return getCollezioniCondiviseByAnnoAndAutore(utente, autore, anno, uriinfo, req);
+                    return getDischiFromCondiviseByAnnoAndAutore(utente, autore, anno, uriinfo, req);
                 }
                 return null;
 
@@ -213,7 +213,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniPersonaliByTitolo(
+    public Response getDischiFromPersonaliByTitolo(
             @QueryParam("titolo") String titolo,
             @javax.ws.rs.core.Context UriInfo uriinfo,
             @javax.ws.rs.core.Context ContainerRequestContext req
@@ -265,7 +265,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniPersonaliByAutore(
+    public Response getDischiFromPersonaliByAutore(
             @QueryParam("autore") String autore,
             @javax.ws.rs.core.Context UriInfo uriinfo,
             @javax.ws.rs.core.Context ContainerRequestContext req
@@ -317,7 +317,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniPersonaliByAnno(
+    public Response getDischiFromPersonaliByAnno(
             @QueryParam("anno") String anno,
             @javax.ws.rs.core.Context UriInfo uriinfo,
             @javax.ws.rs.core.Context ContainerRequestContext req
@@ -369,7 +369,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniPersonaliByTraccia(
+    public Response getDischiFromPersonaliByTraccia(
             @QueryParam("traccia") String traccia,
             @javax.ws.rs.core.Context UriInfo uriinfo,
             @javax.ws.rs.core.Context ContainerRequestContext req
@@ -422,7 +422,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniPersonaliByAnnoAndAutore(
+    public Response getDischiFromPersonaliByAnnoAndAutore(
             @QueryParam("autore") String autore,
             @QueryParam("anno") String anno,
             @javax.ws.rs.core.Context UriInfo uriinfo,
@@ -476,7 +476,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniCondiviseByTitolo(
+    public Response getDischiFromCondiviseByTitolo(
             @QueryParam("utente") String utente,
             @QueryParam("titolo") String titolo,
             @javax.ws.rs.core.Context UriInfo uriinfo,
@@ -530,7 +530,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniCondiviseByAutore(
+    public Response getDischiFromCondiviseByAutore(
             @QueryParam("utente") String utente,
             @QueryParam("autore") String autore,
             @javax.ws.rs.core.Context UriInfo uriinfo,
@@ -584,7 +584,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniCondiviseByAnno(
+    public Response getDischiFromCondiviseByAnno(
             @QueryParam("utente") String utente,
             @QueryParam("anno") String anno,
             @javax.ws.rs.core.Context UriInfo uriinfo,
@@ -638,7 +638,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniCondiviseByTraccia(
+    public Response getDischiFromCondiviseByTraccia(
             @QueryParam("utente") String utente,
             @QueryParam("traccia") String traccia,
             @javax.ws.rs.core.Context UriInfo uriinfo,
@@ -692,7 +692,7 @@ public class UtenteResources {
     }
 
     @Produces("application/json")
-    public Response getCollezioniCondiviseByAnnoAndAutore(
+    public Response getDischiFromCondiviseByAnnoAndAutore(
             @QueryParam("utente") String utente,
             @QueryParam("autore") String autore,
             @QueryParam("anno") String anno,

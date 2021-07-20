@@ -52,13 +52,12 @@ public class DiscoResources {
     DiscoResources(Disco disco) {
         this.disco = disco;
     }
-
-    @Logged
-    @GET
+    
+    
     @Produces("application/json")
-    public Response getDisco() {
+    public Object getDisco() {
         try {
-            return Response.ok(disco).build();
+            return Response.ok(disco).build().getEntity();
         } catch (Exception e) {
             throw new RESTWebApplicationException(e);
         }

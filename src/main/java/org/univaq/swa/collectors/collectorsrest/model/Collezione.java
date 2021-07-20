@@ -16,15 +16,17 @@ public class Collezione {
     
     private String titolo;
     private String privacy;
+    private Utente admin;
     private List<Utente> utenti;
     private List<Map<String,Object>> dischi;
 
     public Collezione() {
     }
 
-    public Collezione(String titolo, String privacy, List<Utente> utenti, List<Map<String,Object>> dischi) {
+    public Collezione(String titolo, String privacy, Utente admin, List<Utente> utenti, List<Map<String,Object>> dischi) {
         this.titolo = titolo;
         this.privacy = privacy;
+        this.admin = admin;
         this.utenti = utenti;
         this.dischi = dischi;
     }
@@ -35,6 +37,10 @@ public class Collezione {
 
     public String getPrivacy() {
         return privacy;
+    }
+
+    public Utente getAdmin() {
+        return admin;
     }
 
     public List<Utente> getUtenti() {
@@ -51,6 +57,10 @@ public class Collezione {
 
     public void setPrivacy(String privacy) {
         this.privacy = privacy;
+    }
+
+    public void setAdmin(Utente admin) {
+        this.admin = admin;
     }
 
     public void setUtenti(List<Utente> utenti) {

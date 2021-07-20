@@ -73,8 +73,8 @@ public class CollezioniResources {
         try {
 
             String sql = "select * "
-                    + "from collezione "
-                    + "where titolo = ?";
+                    + "from collezione, utente "
+                    + "where titolo = ? and collezione.id_utente = utente.id";
 
             connection = dataSource.getConnection();
 
@@ -84,11 +84,14 @@ public class CollezioniResources {
 
             int idCollezione = 0;
             String privacy = null;
+            Utente admin = new Utente();
             while (rs.next()) {
                 privacy = rs.getString("privacy");
                 idCollezione = rs.getInt("id");
+                admin.setUsername(rs.getString("username"));
             }
             result.setPrivacy(privacy);
+            result.setAdmin(admin);
 
             sql = "select * "
                     + "from collezione_condivisa as cond, utente "
@@ -147,30 +150,30 @@ public class CollezioniResources {
             @javax.ws.rs.core.Context UriInfo uriinfo
     ){
          if (autore == null && anno == null && traccia == null) {
-                    return getCollezioniPubblicheByTitolo(titolo, uriinfo);
+                    return getDischiFromPubblicheByTitolo(titolo, uriinfo);
                 }
 
                 if (titolo == null && anno == null && traccia == null) {
-                    return getCollezioniPubblicheByAutore(autore, uriinfo);
+                    return getDischiFromPubblicheByAutore(autore, uriinfo);
                 }
 
                 if (titolo == null && traccia == null && autore == null) {
-                    return getCollezioniPubblicheByAnno(anno, uriinfo);
+                    return getDischiFromPubblicheByAnno(anno, uriinfo);
                 }
 
                 if (titolo == null && anno == null && autore == null) {
-                    return getCollezioniPubblicheByTraccia(traccia, uriinfo);
+                    return getDischiFromPubblicheByTraccia(traccia, uriinfo);
                 }
 
                 if (titolo == null && traccia == null) {
-                    return getCollezioniPubblicheByAutoreAndAnno(autore, anno, uriinfo);
+                    return getDischiFromPubblicheByAutoreAndAnno(autore, anno, uriinfo);
                 }
                 return null;
     }
 
     
     @Produces("application/json")
-    public Response getCollezioniPubblicheByTitolo(
+    public Response getDischiFromPubblicheByTitolo(
             @QueryParam("titolo") String titolo,
             @javax.ws.rs.core.Context UriInfo uriinfo
     ) {
@@ -218,7 +221,7 @@ public class CollezioniResources {
 
     
     @Produces("application/json")
-    public Response getCollezioniPubblicheByAutore(
+    public Response getDischiFromPubblicheByAutore(
             @QueryParam("autore") String autore,
             @javax.ws.rs.core.Context UriInfo uriinfo
     ) {
@@ -267,7 +270,7 @@ public class CollezioniResources {
 
     
     @Produces("application/json")
-    public Response getCollezioniPubblicheByAnno(
+    public Response getDischiFromPubblicheByAnno(
             @QueryParam("anno") String anno,
             @javax.ws.rs.core.Context UriInfo uriinfo
     ) {
@@ -316,7 +319,7 @@ public class CollezioniResources {
 
     
     @Produces("application/json")
-    public Response getCollezioniPubblicheByTraccia(
+    public Response getDischiFromPubblicheByTraccia(
             @QueryParam("traccia") String traccia,
             @javax.ws.rs.core.Context UriInfo uriinfo
     ) {
@@ -367,7 +370,7 @@ public class CollezioniResources {
 
     
     @Produces("application/json")
-    public Response getCollezioniPubblicheByAutoreAndAnno(
+    public Response getDischiFromPubblicheByAutoreAndAnno(
             @QueryParam("autore") String autore,
             @QueryParam("anno") String anno,
             @javax.ws.rs.core.Context UriInfo uriinfo

@@ -8,6 +8,7 @@ package org.univaq.swa.collectors.collectorsrest.resources;
 import java.net.URI;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -31,7 +32,7 @@ public class CollezioneResources {
         this.collezione=collezione;
     }
     
-    @Logged
+    
     @GET
     @Produces("application/json")
     public Response getCollezione() {
@@ -40,6 +41,14 @@ public class CollezioneResources {
         } catch (Exception e) {
             throw new RESTWebApplicationException(e);
         }
+    }
+    
+    @Logged
+    @GET
+    @Path("stats")
+    @Produces("application/json")
+    public Response getStats(){
+        return Response.ok("ciao").build();
     }
     
     

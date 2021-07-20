@@ -107,7 +107,7 @@ public class AutoriResources {
 
         try {
 
-            String sql = "SELECT  d.titolo as titolo, d.anno as anno, a.nome_arte as nome_arte, c.titolo as nome_collezione "
+            String sql = "SELECT  d.titolo as titolo, ANY_VALUE(d.anno) as anno, a.nome_arte as nome_arte, ANY_VALUE(c.titolo) as nome_collezione "
                     + "FROM disco as d join autore as a on (a.id=d.id_autore) "
                     + "join  dischi_collezione as dc on (d.id=dc.id_disco) "
                     + "join collezione as c on (dc.id_collezione = c.id) "
