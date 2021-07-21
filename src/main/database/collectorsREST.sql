@@ -28,7 +28,7 @@ CREATE TABLE `autore` (
   `cognome` varchar(255) NOT NULL,
   `nome_arte` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `autore` (
 
 LOCK TABLES `autore` WRITE;
 /*!40000 ALTER TABLE `autore` DISABLE KEYS */;
-INSERT INTO `autore` VALUES (1,'Matteo','Professione','Ernia');
+INSERT INTO `autore` VALUES (1,'Matteo','Professione','Ernia'),(2,'Mirko','Martorana','Rkomi'),(3,'Fabio','Rizzo','Marracash'),(4,'Colson','Baker','MGK'),(5,'Joseph','Orison','TwentyOnePilots'),(6,'Travis','Baker','Sum41'),(7,'Simone','Benussi','Mace'),(8,'Cosimo','Fini','GuePequeno');
 /*!40000 ALTER TABLE `autore` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +56,7 @@ CREATE TABLE `collezione` (
   PRIMARY KEY (`id`),
   KEY `id_utente` (`id_utente`),
   CONSTRAINT `collezione_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `collezione` (
 
 LOCK TABLES `collezione` WRITE;
 /*!40000 ALTER TABLE `collezione` DISABLE KEYS */;
-INSERT INTO `collezione` VALUES (1,1,'Summer2k21','Personale'),(2,1,'HipHopTopia','Personale'),(3,2,'Inverno2k21','Pubblica');
+INSERT INTO `collezione` VALUES (1,1,'HipHopItaly','Personale'),(2,1,'CarRadio','Personale'),(3,1,'Mix','Pubblica'),(4,2,'MyMorningPlaylist','Personale'),(5,2,'Chilling','Personale'),(6,3,'BestOfRkomi','Pubblica'),(7,3,'BestOfMarracash','Pubblica'),(8,3,'BestOfErnia','Pubblica');
 /*!40000 ALTER TABLE `collezione` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `collezione_condivisa` (
   KEY `id_utente` (`id_utente`),
   CONSTRAINT `collezione_condivisa_ibfk_1` FOREIGN KEY (`id_collezione`) REFERENCES `collezione` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `collezione_condivisa_ibfk_2` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `collezione_condivisa` (
 
 LOCK TABLES `collezione_condivisa` WRITE;
 /*!40000 ALTER TABLE `collezione_condivisa` DISABLE KEYS */;
-INSERT INTO `collezione_condivisa` VALUES (1,1,2),(2,3,1);
+INSERT INTO `collezione_condivisa` VALUES (1,5,1),(2,6,1),(3,7,1),(4,1,2),(5,8,2),(6,4,3),(7,1,3),(8,6,2),(9,7,2);
 /*!40000 ALTER TABLE `collezione_condivisa` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,11 +110,11 @@ CREATE TABLE `dischi_collezione` (
   `id_collezione` int NOT NULL,
   `id_disco` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id_collezione` (`id_collezione`),
   KEY `id_disco` (`id_disco`),
-  CONSTRAINT `dischi_collezione_ibfk_1` FOREIGN KEY (`id_collezione`) REFERENCES `collezione` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `dischi_collezione_ibfk_2` FOREIGN KEY (`id_disco`) REFERENCES `disco` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `dischi_collezione_ibfk_1_idx` (`id_collezione`),
+  CONSTRAINT `dischi_collezione_ibfk_2` FOREIGN KEY (`id_disco`) REFERENCES `disco` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk1` FOREIGN KEY (`id_collezione`) REFERENCES `collezione` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +123,7 @@ CREATE TABLE `dischi_collezione` (
 
 LOCK TABLES `dischi_collezione` WRITE;
 /*!40000 ALTER TABLE `dischi_collezione` DISABLE KEYS */;
-INSERT INTO `dischi_collezione` VALUES (1,1,1),(2,2,1),(3,3,1),(7,1,2);
+INSERT INTO `dischi_collezione` VALUES (33,1,30),(34,8,30),(35,8,31),(36,8,32);
 /*!40000 ALTER TABLE `dischi_collezione` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +142,7 @@ CREATE TABLE `disco` (
   PRIMARY KEY (`id`),
   KEY `id_autore` (`id_autore`),
   CONSTRAINT `disco_ibfk_1` FOREIGN KEY (`id_autore`) REFERENCES `autore` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,7 +151,7 @@ CREATE TABLE `disco` (
 
 LOCK TABLES `disco` WRITE;
 /*!40000 ALTER TABLE `disco` DISABLE KEYS */;
-INSERT INTO `disco` VALUES (1,1,'68','2020'),(2,1,'67','2016');
+INSERT INTO `disco` VALUES (30,1,'67','2016'),(31,1,'68','2020'),(32,1,'Gemelli','2021');
 /*!40000 ALTER TABLE `disco` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,11 +167,10 @@ CREATE TABLE `tracce_disco` (
   `id_disco` int NOT NULL,
   `id_traccia` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id_disco` (`id_disco`),
   KEY `id_traccia` (`id_traccia`),
-  CONSTRAINT `tracce_disco_ibfk_1` FOREIGN KEY (`id_disco`) REFERENCES `disco` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `tracce_disco_ibfk_1_idx` (`id_disco`,`id_traccia`),
   CONSTRAINT `tracce_disco_ibfk_2` FOREIGN KEY (`id_traccia`) REFERENCES `traccia` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,7 +179,7 @@ CREATE TABLE `tracce_disco` (
 
 LOCK TABLES `tracce_disco` WRITE;
 /*!40000 ALTER TABLE `tracce_disco` DISABLE KEYS */;
-INSERT INTO `tracce_disco` VALUES (1,1,1),(2,1,2),(3,2,3),(4,2,4),(5,2,5);
+INSERT INTO `tracce_disco` VALUES (89,30,88),(90,30,89),(91,30,90),(92,30,91),(93,30,92),(94,30,93),(95,31,94),(96,31,95),(97,31,96),(98,31,97),(99,32,98),(100,32,99),(101,32,100),(102,32,101),(103,32,102),(104,32,103);
 /*!40000 ALTER TABLE `tracce_disco` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -196,7 +195,7 @@ CREATE TABLE `traccia` (
   `titolo` varchar(255) NOT NULL,
   `durata` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,7 +204,7 @@ CREATE TABLE `traccia` (
 
 LOCK TABLES `traccia` WRITE;
 /*!40000 ALTER TABLE `traccia` DISABLE KEYS */;
-INSERT INTO `traccia` VALUES (1,'Domani',120),(2,'68',194),(3,'QT8',128),(4,'Bella',214),(5,'La ballata di Mario Rossi',243);
+INSERT INTO `traccia` VALUES (88,'EGO',257),(89,'Lei no',231),(90,'Disgusting',201),(91,'Noia',193),(92,'QT',227),(93,'Bella',220),(94,'68',203),(95,'Simba',243),(96,'Tosse',182),(97,'La paura',164),(98,'Vivo',203),(99,'Superclassico',204),(100,'Puro Sinaloa',220),(101,'Morto dentro',164),(102,'Ferma a guardare',219),(103,'Cigni',200);
 /*!40000 ALTER TABLE `traccia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,7 +230,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES (1,'mario','mario123','ea481d95-b6a5-4bc4-8028-4a6ed2728cee'),(2,'giovanni','giovanni321',NULL);
+INSERT INTO `utente` VALUES (1,'federico','federico123','92682e31-93bb-4954-8c98-7df120eae57a'),(2,'davide','davide123',''),(3,'mario','mario123',NULL);
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -248,4 +247,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-19 10:54:06
+-- Dump completed on 2021-07-21  9:54:10

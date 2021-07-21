@@ -50,7 +50,7 @@ import org.univaq.swa.collectors.collectorsrest.model.Utente;
 public class UtenteResources {
 
     DataSource dataSource = null;
-    
+
     @GET
     @Path("collezioni")
     @Produces("application/json")
@@ -187,13 +187,19 @@ public class UtenteResources {
 
         try {
 
-            String sql = "SELECT * from collezione, utente, collezione_condivisa as coll_cond where utente.username = ? "
-                    + " and coll_cond.id_collezione = collezione.id;";
+            String sql = "SELECT DISTINCT(titolo) from collezione, utente, collezione_condivisa as coll_cond where "
+                    + "collezione.id = coll_cond.id_collezione and utente.id = collezione.id_utente and "
+                    + "( (coll_cond.id_utente = (SELECT id from utente where username= ? )) OR "
+                    + "(collezione.id_utente = (SELECT id from utente where username= ? )) ) and "
+                    + "(username=? or username= ?) ;";
 
             connection = dataSource.getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, utente);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, username);
+            preparedStatement.setString(4, utente);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -498,17 +504,24 @@ public class UtenteResources {
 
         try {
 
-            String sql = "SELECT collezione.titolo as collezione, disco.titolo as disco "
+            String sql = "SELECT DISTINCT collezione.titolo as collezione, disco.titolo as disco "
                     + "from collezione, utente, collezione_condivisa as coll_cond, disco, "
-                    + "dischi_collezione as dis_coll where utente.username = ? "
-                    + "and coll_cond.id_collezione = collezione.id and coll_cond.id_collezione = dis_coll.id_collezione "
-                    + "and disco.id = dis_coll.id_disco and disco.titolo = ?";
+                    + "dischi_collezione as dis_coll where collezione.id = coll_cond.id_collezione "
+                    + "and utente.id = collezione.id_utente and "
+                    + "( (coll_cond.id_utente = (SELECT id from utente where username= ?)) OR "
+                    + "(collezione.id_utente = (SELECT id from utente where username= ?)) ) "
+                    + "and (username= ? or username= ?) "
+                    + "and coll_cond.id_collezione = dis_coll.id_collezione "
+                    + "and disco.id = dis_coll.id_disco and disco.titolo = ?;";
 
             connection = dataSource.getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, utente);
-            preparedStatement.setString(2, titolo);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, username);
+            preparedStatement.setString(4, utente);
+            preparedStatement.setString(5, titolo);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -552,17 +565,22 @@ public class UtenteResources {
 
         try {
 
-            String sql = "SELECT collezione.titolo as collezione, disco.titolo as disco from collezione, "
+            String sql = "SELECT DISTINCT collezione.titolo as collezione, disco.titolo as disco from collezione, "
                     + "utente, collezione_condivisa as coll_cond, disco, dischi_collezione as dis_coll, autore "
-                    + "where utente.username = ? and coll_cond.id_collezione = collezione.id "
+                    + "where collezione.id = coll_cond.id_collezione and utente.id = collezione.id_utente and "
+                    + "( (coll_cond.id_utente = (SELECT id from utente where username= ?)) OR "
+                    + "(collezione.id_utente = (SELECT id from utente where username= ?)) ) and (username= ? or username= ?) "
                     + "and coll_cond.id_collezione = dis_coll.id_collezione and disco.id = dis_coll.id_disco "
                     + "and disco.id_autore = autore.id and autore.nome_arte = ? order by collezione.titolo;";
 
             connection = dataSource.getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, utente);
-            preparedStatement.setString(2, autore);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, username);
+            preparedStatement.setString(4, utente);
+            preparedStatement.setString(5, autore);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -606,17 +624,22 @@ public class UtenteResources {
 
         try {
 
-            String sql = "SELECT collezione.titolo as collezione, disco.titolo as disco from collezione, "
+            String sql = "SELECT DISTINCT collezione.titolo as collezione, disco.titolo as disco from collezione, "
                     + "utente, collezione_condivisa as coll_cond, disco, dischi_collezione as dis_coll "
-                    + "where utente.username = ? and coll_cond.id_collezione = collezione.id "
+                    + "where collezione.id = coll_cond.id_collezione and utente.id = collezione.id_utente and "
+                    + "( (coll_cond.id_utente = (SELECT id from utente where username= ?)) OR "
+                    + "(collezione.id_utente = (SELECT id from utente where username= ?)) ) and (username= ? or username= ?) "
                     + "and coll_cond.id_collezione = dis_coll.id_collezione and disco.id = dis_coll.id_disco "
                     + "and disco.anno = ? ORDER BY collezione.titolo;";
 
             connection = dataSource.getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, utente);
-            preparedStatement.setString(2, anno);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, username);
+            preparedStatement.setString(4, utente);
+            preparedStatement.setString(5, anno);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -660,17 +683,25 @@ public class UtenteResources {
 
         try {
 
-            String sql = "SELECT collezione.titolo as collezione, disco.titolo as disco from collezione, utente, collezione_condivisa as coll_cond, disco, "
-                    + "dischi_collezione as dis_coll, traccia, tracce_disco as tra_dis where utente.username = ? and "
-                    + "coll_cond.id_collezione = collezione.id "
-                    + "and coll_cond.id_collezione = dis_coll.id_collezione and disco.id = dis_coll.id_disco and tra_dis.id_disco = disco.id "
+            String sql = "SELECT DISTINCT collezione.titolo as collezione, disco.titolo as disco from "
+                    + "collezione, utente, collezione_condivisa as coll_cond, disco, "
+                    + "dischi_collezione as dis_coll, traccia, tracce_disco as tra_dis where "
+                    + "collezione.id = coll_cond.id_collezione and utente.id = collezione.id_utente and "
+                    + "( (coll_cond.id_utente = (SELECT id from utente where username= ?)) OR "
+                    + "(collezione.id_utente = (SELECT id from utente where username= ?)) ) and "
+                    + "(username= ? or username= ?) "
+                    + "and coll_cond.id_collezione = dis_coll.id_collezione and disco.id = dis_coll.id_disco "
+                    + "and tra_dis.id_disco = disco.id "
                     + "and tra_dis.id_traccia = traccia.id and traccia.titolo = ?;";
 
             connection = dataSource.getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, utente);
-            preparedStatement.setString(2, traccia);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, username);
+            preparedStatement.setString(4, utente);
+            preparedStatement.setString(5, traccia);
 
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -715,10 +746,13 @@ public class UtenteResources {
 
         try {
 
-            String sql = "SELECT collezione.titolo as collezione, disco.titolo as disco from collezione, utente, "
-                    + "collezione_condivisa as coll_cond, "
+            String sql = "SELECT DISTINCT collezione.titolo as collezione, disco.titolo as disco from collezione, "
+                    + "utente, collezione_condivisa as coll_cond, "
                     + "disco, dischi_collezione as dis_coll, autore "
-                    + "where utente.username = ? and coll_cond.id_collezione = collezione.id and "
+                    + "where collezione.id = coll_cond.id_collezione and utente.id = collezione.id_utente and "
+                    + "( (coll_cond.id_utente = (SELECT id from utente where username= ?)) OR "
+                    + "(collezione.id_utente = (SELECT id from utente where username= ?)) ) and "
+                    + "(username= ? or username= ?)  and "
                     + "coll_cond.id_collezione = dis_coll.id_collezione "
                     + "and disco.id = dis_coll.id_disco and disco.anno = ? and "
                     + "disco.id_autore = autore.id and autore.nome_arte = ?;";
@@ -726,9 +760,12 @@ public class UtenteResources {
             connection = dataSource.getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, utente);
-            preparedStatement.setString(2, anno);
-            preparedStatement.setString(3, autore);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, username);
+            preparedStatement.setString(4, utente);
+            preparedStatement.setString(5, anno);
+            preparedStatement.setString(6, autore);
 
             ResultSet rs = preparedStatement.executeQuery();
 
