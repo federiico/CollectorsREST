@@ -5,6 +5,22 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h1>CIAO MONDO</h1>
+        <h1>Web Avanzato!</h1>
+        <p id="lista"></p>
     </body>
 </html>
+
+<script>
+            let request = new XMLHttpRequest();
+            request.open("GET", "http://localhost:8080/CollectorsREST/rest/autori");
+            request.send();
+            request.onload = () => {
+                console.log(request);
+                if (request.status === 200) {                   
+                    var par = document.getElementById('lista');
+                    par.innerHTML = request.responseText;
+                } else {
+                    console.log(`error ${request.status} ${request.statusText}`);
+                }
+            };
+</script>
