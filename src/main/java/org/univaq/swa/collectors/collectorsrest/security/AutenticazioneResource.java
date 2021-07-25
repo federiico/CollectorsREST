@@ -76,7 +76,7 @@ public class AutenticazioneResource {
                 }
                 
 
-                return Response.ok().header(HttpHeaders.AUTHORIZATION, authToken).build();
+                return Response.ok(authToken).header(HttpHeaders.AUTHORIZATION, authToken).build();
 
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).build();

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        
+        <title>Autenticato</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h3 class="text-center">Lista Collezioni personali</h3>
+        <div class="container text-center col-4">
+            <div id="listaCollezioni"></div>
+        </div>
+        <div class="text-center">
+            <button id="logout"> LOGOUT </button>
+        </div>
+    </body>
+</html>
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+<script>
+    
+    $(document).ready(function(){
+        var urlitem = window.location.href;
+        var url = new URL(urlitem);
+        var token = url.searchParams.get("token");
+        
+        $.ajax({
+            type: 'GET',
+            url:'http://localhost:8080/CollectorsREST/rest/utente/collezioni?privacy=personale',
+            headers: {
+                            'Authorization': 'Bearer '+ token
+                },
+            success: function( response ){
+                response.forEach( function (element, i){
+                    
+                    var div = `<div style="border: 5px solid cyan; overflow-wrap: break-word;" class="urlCollezione"><p class="Testourl">${element}</p></div>`;
+                    $("#listaCollezioni").append(div);  
+                });
+                 $(".urlCollezione").each( function(){
+                     var urlCollezione = this;
+                     $(urlCollezione).one("click", function(){
+                         $.ajax({
+                                type: 'GET',
+                                url: $(urlCollezione).children(".Testourl").text(),
+                                success: function( element ){
+                                   
+                                    var div = `<div style="border: 0px solid blue; overflow-wrap: break-word;" class="Dischi">Titolo: ${element.titolo} Admin: ${element.admin.username}</div>`;
+                                    $(urlCollezione).append(div);  
+                                    var ArrayDischi = element.dischi;
+                                    ArrayDischi.forEach( function(d) {
+                                        var div = `<div class="UriDisco" style="border: 5px solid purple; overflow-wrap: break-word;"><p class="testourlDisco"> ${d.uri} </p></div>`;
+                                        $(urlCollezione).append(div);     
+                                    });
+                                     $(".UriDisco").each( function(){
+                                        var UriDisco = this;
+                                        $(UriDisco).one("click", function(){
+                                            $.ajax({
+                                                type: 'GET',
+                                                url: $(UriDisco).children(".testourlDisco").text(),
+                                                success: function( disco ){
+                                                    console.log(disco);
+                                                    var div = `<div class="InfoDisco" style="border: 0px solid violet; overflow-wrap: break-word;"> Autore: ${disco.disco.autore} Titolo: ${disco.disco.titolo} Anno di Uscita: ${disco.disco.anno_di_uscita} </div>`;
+                                                    $(UriDisco).append(div); 
+                                                    
+                                                    var ArrayBrani = disco.disco.tracce;
+                                                   
+                                                    var i=1;
+                                                    
+                                                    ArrayBrani.forEach( function(t) {
+                                                        var divInfoT = `<div style="border: 5px solid red; overflow-wrap: break-word;"><p>Traccia ${i}</p> <div> Titolo ${t.titolo} Durata ${t.durata}</div></div>`;
+                                                        $(UriDisco).append(divInfoT);  
+                                                        i = i+1;
+                                                    });
+                                                }
+                                            })
+                                        })
+                                    })
+                                }
+                        });
+                     })
+                 }); 
+            },
+            error: function(){
+                console.log("errore");
+            }
+            
+        });
+        
+        $("#logout").click( function (){
+            $.ajax({
+            type: 'DELETE',
+            url:'http://localhost:8080/CollectorsREST/rest/auth/logout',
+            headers: {
+                            'Authorization': 'Bearer '+ token
+                },
+            success: function( response ){
+                window.location.assign(`index.html`);
+            }
+        });
+        })
+     
+    })
+    
+</script>
