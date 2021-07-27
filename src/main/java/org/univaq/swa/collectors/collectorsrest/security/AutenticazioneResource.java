@@ -20,7 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.univaq.swa.collectors.collectorsrest.RESTWebApplicationException;
@@ -76,7 +75,7 @@ public class AutenticazioneResource {
                 }
                 
 
-                return Response.ok(authToken).header(HttpHeaders.AUTHORIZATION, authToken).build();
+                return Response.ok("Login avvenuto con successo.").header(HttpHeaders.AUTHORIZATION, authToken).build();
 
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).build();

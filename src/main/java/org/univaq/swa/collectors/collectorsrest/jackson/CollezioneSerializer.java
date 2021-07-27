@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 import org.univaq.swa.collectors.collectorsrest.model.Collezione;
-import org.univaq.swa.collectors.collectorsrest.model.Disco;
 
 /**
  *

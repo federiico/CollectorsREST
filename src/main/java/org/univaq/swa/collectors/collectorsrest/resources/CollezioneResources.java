@@ -5,29 +5,21 @@
  */
 package org.univaq.swa.collectors.collectorsrest.resources;
 
-import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import org.univaq.swa.collectors.collectorsrest.model.Collezione;
-import org.univaq.swa.collectors.collectorsrest.model.Disco;
 import org.univaq.swa.collectors.collectorsrest.RESTWebApplicationException;
-import org.univaq.swa.collectors.collectorsrest.model.Utente;
 import org.univaq.swa.collectors.collectorsrest.security.Logged;
 
 /**

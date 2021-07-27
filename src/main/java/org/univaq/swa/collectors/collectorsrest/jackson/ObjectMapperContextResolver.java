@@ -8,7 +8,6 @@ package org.univaq.swa.collectors.collectorsrest.jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import java.util.Calendar;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import org.univaq.swa.collectors.collectorsrest.model.Disco;
